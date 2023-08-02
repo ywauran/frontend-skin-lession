@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">SkinLession</string>
+    <string name="reason">Penyebab:
+                        -\tHiperpigmentasi
+                        -\tHipopigmentasi
+                        -\tDepigmentasi
+                        Nama penyakit penyebab :
+                        -\tMelasma
+                        -\tVitiligo
+                        -\tTinea Vercolor (Panu)
+                        -\tBintik matahari (Freckles)
+                        -\tBintik penuaan
+                        -\tBekas luka</string>
+
+</resources>
