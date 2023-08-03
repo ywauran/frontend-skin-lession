@@ -5,8 +5,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Typeface
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -45,6 +48,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var finishButton: Button
     private lateinit var tvDescription: TextView
     private lateinit var tvReason: TextView
+    private lateinit var tvDisease: TextView
+    private lateinit var tvDescriptionBold: TextView
+    private lateinit var tvReasonBold: TextView
+    private lateinit var tvDiseaseBold: TextView
 
     companion object {
         private const val PERMISSION_REQUEST_CODE = 123
@@ -65,6 +72,10 @@ class MainActivity : AppCompatActivity() {
         finishButton = findViewById(R.id.button_finish)
         tvDescription = findViewById(R.id.tv_description)
         tvReason = findViewById(R.id.tv_reason)
+        tvDisease = findViewById(R.id.disease)
+        tvDiseaseBold = findViewById(R.id.disease_bold)
+        tvReasonBold = findViewById(R.id.reason_bold)
+        tvDescriptionBold = findViewById(R.id.tv_description_bold)
 
         selectImageButton.setOnClickListener {
             checkAndRequestPermissions()
@@ -89,10 +100,14 @@ class MainActivity : AppCompatActivity() {
         captureImageButton.visibility = View.VISIBLE
         uploadImageButton.visibility = View.VISIBLE
         finishButton.visibility = View.GONE
+        tvDescriptionBold.visibility = View.GONE
+        tvDiseaseBold.visibility = View.GONE
+        tvReasonBold.visibility = View.GONE
         confidenceTextView.text = ""
         predictionTextView.text = ""
         tvDescription.text = ""
         tvReason.text = ""
+        tvDisease.text = ""
 
     }
 
@@ -215,6 +230,20 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    // Function to apply bold style to the specified text
+    fun setBoldText(textView: TextView, text: String) {
+        val spannableStringBuilder = SpannableStringBuilder(text)
+        spannableStringBuilder.setSpan(
+            StyleSpan(Typeface.BOLD),
+            0,
+            text.length,
+            SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        textView.text = spannableStringBuilder
+    }
+
+
+
     private fun handlePredictResponse(predictResponse: PredictResponse?) {
         if (predictResponse != null) {
             val confidenceCnn = predictResponse.confidenceCnn
@@ -224,51 +253,43 @@ class MainActivity : AppCompatActivity() {
 
             when (predictionCnn) {
                 "Vesikular" -> {
-                    tvDescription.text = "Deskripsi: Peninggian yang berisi cairan dengan ukuran kurang dari atau sama dengan 0,5 cm. Lesi ini dapat tersusun secara linear, bergerombol atau tersebar."
-                    tvReason.text =   "Penyebab: \n" +
-                            "-\tEksim atau Dermatitis\n" +
+                    tvDescription.text = "Peninggian yang berisi cairan dengan ukuran kurang dari atau sama dengan 0,5 cm. Lesi ini dapat tersusun secara linear, bergerombol atau tersebar."
+                    tvReason.text = "-\tEksim atau Dermatitis\n" +
                             "-\tVirus varicella-zoster\n" +
                             "-\tInfeksi pada mulut, tangan dan kaki\n" +
                             "-\tInfeksi Fungal dan Bakteri\n" +
-                            "-\tLuka bakar\n" +
-                            "Nama Penyakit Penyebab :\n" +
-                            "-\tRuam Vesikular\n" +
+                            "-\tLuka bakar\n"
+                    tvDisease.text = "-\tRuam Vesikular\n" +
                             "-\tCacar air (Chickenpox)\n" +
                             "-\tCacar ular (Shingles)\n" +
                             "-\tHerpes Simplex\n"
                 }
                 "Papula" -> {
-                    tvDescription.text = "Deskripsi: Peninggian padat  berdiameter kurang dari 0,5 cm dengan permukaan yang berbentuk bulat atau flat-topped. Warnanya bervariasi, seperti merah, kekuningan, putih dan hitam."
-                    tvReason.text =   "Penyebab: \n" +
-                            "-\tInfeksi kulit\n" +
+                    tvDescription.text = "Peninggian padat  berdiameter kurang dari 0,5 cm dengan permukaan yang berbentuk bulat atau flat-topped. Warnanya bervariasi, seperti merah, kekuningan, putih dan hitam."
+                    tvReason.text = "-\tInfeksi kulit\n" +
                             "-\tInfeksi jamur\n" +
                             "-\tVirus varicella-zoster\n" +
-                            "-\tEksim atau Dermatitis\n" +
-                            "Nama Penyakit Penyebab :\n" +
-                            "-\tCacar air\n" +
-                            "-\tJerawat Papul\n" +
+                            "-\tEksim atau Dermatitis\n"
+                    tvDisease.text = "-\tCacar air\n" +
+                            "-\tJerawat Papula\n" +
                             "-\tHerpes Zoster\n"
                 }
                 "Urtikaria" -> {
-                    tvDescription.text = "Deskripsi: Berwarna merah muda hingga kemerahan yang dikelilingi oleh makula eritem yang peninggiannya berbentuk seperti plateau, edema dan bersifat mudah pudar atau menghilang dengan ukuran yang bervariasi."
-                    tvReason.text =   "Penyebab :\n" +
-                            "-\tAlergi (obat-obatan, tanaman, makanan)\n" +
+                    tvDescription.text = "Berwarna merah muda hingga kemerahan yang dikelilingi oleh makula eritem yang peninggiannya berbentuk seperti plateau, edema dan bersifat mudah pudar atau menghilang dengan ukuran yang bervariasi."
+                    tvReason.text = "-\tAlergi (obat-obatan, tanaman, makanan)\n" +
                             "-\tTungau\n" +
                             "-\tGigitan serangga\n" +
                             "-\tStres\n" +
                             "-\tPakaian ketat\n" +
                             "-\tOlahraga (keringat)\n"
-                            "Nama PenyakitPenyebab :\n" +
-                            "-\tBiduran/Hives\n"
+                    tvDisease.text = "-\tBiduran/Hives\n"
                 }
                 else -> {
-                    tvDescription.text = "Deskripsi: Perubahan warna tanpa peninggian pada kulit yang dapat berbentuk oval, bulat atau ireguler"
-                    tvReason.text =   "Penyebab: \n" +
-                            "-\tHiperpigmentasi\n" +
+                    tvDescription.text = "Perubahan warna tanpa peninggian pada kulit yang dapat berbentuk oval, bulat atau ireguler"
+                    tvReason.text = "-\tHiperpigmentasi\n" +
                             "-\tHipopigmentasi\n" +
-                            "-\tDepigmentasi\n" +
-                            "Nama penyakit penyebab  :\n" +
-                            "-\tMelasma\n" +
+                            "-\tDepigmentasi\n"
+                    tvDisease.text = "-\tMelasma\n" +
                             "-\tVitiligo\n" +
                             "-\tTinea Vercolor (Panu)\n" +
                             "-\tBintik matahari (Freckles)\n" +
@@ -276,12 +297,16 @@ class MainActivity : AppCompatActivity() {
                             "-\tBekas luka\n"
                 }
             }
+
             predictionTextView.text = "Jenis: $predictionCnn"
 
             captureImageButton.visibility = View.GONE
             selectImageButton.visibility = View.GONE
             uploadImageButton.visibility = View.GONE
             finishButton.visibility = View.VISIBLE
+            tvDescriptionBold.visibility = View.VISIBLE
+            tvDiseaseBold.visibility = View.VISIBLE
+            tvReasonBold.visibility = View.VISIBLE
 
             showToast("Terdeteksi")
         } else {
